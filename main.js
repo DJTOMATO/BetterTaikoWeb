@@ -4,7 +4,6 @@ const path = require('path');
 const RPC = require('discord-rpc');
 const clientId = '1259256953348034602';
 
-
 const rpc = new RPC.Client({ transport: 'ipc' });
 
 const faviconUrl = 'https://play-lh.googleusercontent.com/Cv08QVGL1gd9aiMU9-rv71tCn-mM_rlXINYTNzjd5PYM7tVqxHm_2ooKMd_Kxn_6lBk';
@@ -19,14 +18,29 @@ async function fetchFavicon(url) {
   }
 }
 
+async function fetchTjaFile(url) {
+  try {
+    const response = await axios.get(url, { responseType: 'text' });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching TJA file:', error);
+    return null;
+  }
+}
+
+function extractSongNameFromTja(tjaContent) {
+  const titleLine = tjaContent.split('\n').find(line => line.startsWith('TITLE:'));
+  if (titleLine) {
+    return titleLine.split(':')[1].trim();
+  }
+  return null;
+}
+
 let mainWindow;
 let icon;
 
 async function createWindow() {
-
   const faviconBase64 = await fetchFavicon(faviconUrl);
-
-
   icon = faviconBase64 ? nativeImage.createFromDataURL(`data:image/png;base64,${faviconBase64}`) : null;
 
   mainWindow = new BrowserWindow({
@@ -41,23 +55,18 @@ async function createWindow() {
     icon: icon
   });
 
-
   mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(createWindow);
 
 ipcMain.on('load-site', async (event, url) => {
-  currentSiteUrl = url;
-
-
-  mainWindow.loadURL(currentSiteUrl);
-
+  mainWindow.loadURL(url);
 
   rpc.on('ready', () => {
     rpc.setActivity({
       details: 'Hitting all the notes in taiko',
-      state: 'Initializing...',
+      state: 'Main Menu',
       startTimestamp: Date.now(),
       largeImageKey: 'taiko',
       largeImageText: 'Taiko',
@@ -67,25 +76,14 @@ ipcMain.on('load-site', async (event, url) => {
 
   rpc.login({ clientId }).catch(console.error);
 
-
-  let currentSongName = null;
-
-
-  async function updateSongName() {
-    try {
-      const songName = await mainWindow.webContents.executeJavaScript(`
-        (function() {
-          const songDiv = document.querySelector('#song-sel-selectable');
-          if (songDiv && songDiv.children.length > 0) {
-            return Array.from(songDiv.children).map(child => child.getAttribute('alt')).join('');
-          }
-          return null;
-        })();
-      `);
-
-      if (songName) {
-        if (songName !== currentSongName) {
-          currentSongName = songName;
+  mainWindow.webContents.session.webRequest.onCompleted(async (details) => {
+    if (details.url.endsWith('.tja')) {
+      console.log(`Detected TJA file request: ${details.url}`);
+      const tjaContent = await fetchTjaFile(details.url);
+      if (tjaContent) {
+        const songName = extractSongNameFromTja(tjaContent);
+        if (songName) {
+          console.log(`Playing song: ${songName}`);
           rpc.setActivity({
             details: 'Hitting all the notes in taiko',
             state: `Playing ${songName}`,
@@ -94,25 +92,14 @@ ipcMain.on('load-site', async (event, url) => {
             largeImageText: 'Taiko',
             instance: false,
           });
+        } else {
+          console.log('Song name not found in TJA file.');
         }
-      } else if (currentSongName) {
-        currentSongName = null;
-        rpc.setActivity({
-          details: 'Hitting all the notes in taiko',
-          state: 'In the main menu',
-          startTimestamp: Date.now(),
-          largeImageKey: 'taiko',
-          largeImageText: 'Taiko',
-          instance: false,
-        });
+      } else {
+        console.log('Failed to fetch TJA file.');
       }
-    } catch (error) {
-      console.error('Error updating song name:', error);
     }
-  }
-
-
-  setInterval(updateSongName, 5000);
+  });
 });
 
 app.on('window-all-closed', () => {
