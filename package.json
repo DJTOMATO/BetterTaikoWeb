@@ -1,7 +1,7 @@
 {
-  "name": "BetterTaikoWeb",
+  "name": "TaikoLena",
   "version": "1.0.0",
-  "description": "BetterTaikoWeb with Discord Rich Presence integration",
+  "description": "Taiko Lena with Discord Rich Presence integration",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -12,21 +12,21 @@
     "discord",
     "rich presence"
   ],
-  "author": "Your Name",
+  "author": "Glas",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0",
     "discord-rpc": "^4.0.1"
   },
   "devDependencies": {
-    "electron": "^23.0.0",
-    "electron-builder": "^23.6.0"
+    "electron": "^31.4.0",
+    "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.yourname.bettertaikoweb",
+    "appId": "com.glas.taikolena",
     "win": {
       "target": "nsis",
-      "icon": "build/icon.ico"
+      "icon": "icon.ico"
     },
     "files": [
       "main.js",

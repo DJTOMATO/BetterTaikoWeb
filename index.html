@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Taiko-Web Site</title>
+    <title>Loading...</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,47 +13,40 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background-image: url('https://baubau.lena.moe/assets/img/title-screen.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
         }
+
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         label {
             margin: 10px 0;
         }
+
         button {
             margin-top: 20px;
             padding: 10px 20px;
         }
     </style>
 </head>
+
 <body>
-    <h1>Select Taiko-Web Site</h1>
-    <form id="taikoForm">
-        <label for="siteSelect">Choose a site:</label>
-        <select id="siteSelect" name="siteSelect">
-            <option value="https://taiko.bui.pm/">taiko.bui.pm</option>
-            <option value="https://taiko.ani-nya.com/">taiko.ani-nya.com</option>
-            <option value="https://cjdgrevival.com/">cjdgrevival.com</option>
-            <option value="https://taikoapp.uk/">taikoapp.uk</option>
-            
-            <!-- Add more options as needed -->
-        </select>
-        <label for="customSite">Or enter a custom site:</label>
-        <input type="url" id="customSite" name="customSite" placeholder="https://example.com">
-        <button type="submit">Load Site</button>
-    </form>
+    <h1>Loading</h1>
+
     <script>
-        const form = document.getElementById('taikoForm');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const siteSelect = document.getElementById('siteSelect').value;
-            const customSite = document.getElementById('customSite').value;
-            const selectedSite = customSite || siteSelect;
-            window.electronAPI.loadSite(selectedSite);
-        });
+        window.onload = function () {
+            const defaultSite = "https://baubau.lena.moe";
+            window.electronAPI.loadSite(defaultSite);
+        };
     </script>
+
+
 </body>
+
 </html>

@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, nativeImage } = require('electron');
 const axios = require('axios');
 const path = require('path');
 const RPC = require('discord-rpc');
-const clientId = '1259256953348034602';
+const clientId = '966159870833332264';
 
 const rpc = new RPC.Client({ transport: 'ipc' });
 
@@ -68,8 +68,10 @@ ipcMain.on('load-site', async (event, url) => {
       details: 'Hitting all the notes in taiko',
       state: 'Main Menu',
       startTimestamp: Date.now(),
-      largeImageKey: 'taiko',
-      largeImageText: 'Taiko',
+      largeImageKey: 'logo',
+      largeImageText: 'Ogey',
+      smallImageKey: 'logo',
+      smallImageText: 'Rrat',
       instance: false,
     });
   });
@@ -88,8 +90,10 @@ ipcMain.on('load-site', async (event, url) => {
             details: 'Hitting all the notes in taiko',
             state: `Playing ${songName}`,
             startTimestamp: Date.now(),
-            largeImageKey: 'taiko',
-            largeImageText: 'Taiko',
+            largeImageKey: 'logo',
+            largeImageText: 'Ogey',
+            smallImageKey: 'logo',
+            smallImageText: 'Rrat',
             instance: false,
           });
         } else {
