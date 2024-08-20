@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, nativeImage, globalShortcut} = require('electron');
 const axios = require('axios');
 const path = require('path');
 const RPC = require('discord-rpc');
@@ -56,6 +56,15 @@ async function createWindow() {
   });
 
   mainWindow.loadFile('index.html');
+  mainWindow.webContents.on('did-finish-load', () => {
+    globalShortcut.register('F5', () => {
+      mainWindow.reload();
+    });
+
+    globalShortcut.register('CommandOrControl+R', () => {
+      mainWindow.reload();
+    });
+  });
 }
 
 app.whenReady().then(createWindow);
@@ -115,9 +124,11 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+    
   }
 });
 
 app.on('before-quit', () => {
   rpc.destroy();
 });
+

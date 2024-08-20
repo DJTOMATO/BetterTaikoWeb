@@ -1,6 +1,6 @@
 {
   "name": "TaikoLena",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Taiko Lena with Discord Rich Presence integration",
   "main": "main.js",
   "scripts": {
