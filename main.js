@@ -57,13 +57,18 @@ async function createWindow() {
 
   mainWindow.loadFile('index.html');
   mainWindow.webContents.on('did-finish-load', () => {
-    globalShortcut.register('F5', () => {
-      mainWindow.reload();
-    });
+    app.on('browser-window-focus', () => {
+      globalShortcut.register('F5', () => {
+        mainWindow.reload();
+      });
+      globalShortcut.register('CommandOrControl+R', () => {
+        mainWindow.reload();
+      });
+    })
 
-    globalShortcut.register('CommandOrControl+R', () => {
-      mainWindow.reload();
-    });
+    app.on('browser-window-blur', () => {
+      globalShortcut.unregisterAll()
+    })
   });
 }
 
